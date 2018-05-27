@@ -1,4 +1,4 @@
-package mrmango.bsuir.schedule.parser;
+package mrmango.bsuir.schedule.services;
 
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
@@ -9,26 +9,28 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 
 /**
  * created by Ilya Aleksandrovich
  * on 27-May-2018
  */
-@Component
+@Service
 public class HtmlParser {
     private static final Logger log = LogManager.getLogger(HtmlParser.class);
 
     private Document document;
     private final Connection connection;
+    private final String group;
 
-    public HtmlParser(@Value("${page.url}") String url) {
+    public HtmlParser(@Value("${page.url}") String url,
+                      @Value("${student.group}") String group) {
         log.info("Establishing connection to " + url);
         connection = Jsoup.connect(url);
+        this.group = group;
         reload();
     }
 
@@ -40,24 +42,27 @@ public class HtmlParser {
 
     public boolean checkSchedule(LocalDate prevDate) {
         log.info("Checking schedule for changes");
-        Element row = getScheduleElementByGroup();
-        String line = row.child(1).text().replace("изменения от", "").trim();
-                LocalDate date = LocalDate.parse(line, DateTimeFormatter.ofPattern("dd.MM.uuuu"));
+        Element row = getScheduleRowByGroup(group);
+        String rawDate = row.child(1).text().replaceAll("[^\\d.]", "");
+        log.info("Current schedule date is " + rawDate);
+        LocalDate date = LocalDate.parse(rawDate, DateTimeFormatter.ofPattern("dd.MM.uuuu"));
         return date.isAfter(prevDate);
     }
 
-    public String getScheduleUrl() {
+    public String getScheduleUri() {
         log.info("Getting schedule url");
-        Element link = getScheduleElementByGroup().child(2).getElementsByTag("a").get(0);
-        return link.attr("href");
+        Element link = getScheduleRowByGroup(group).child(2).getElementsByTag("a").get(0);
+        String uri = link.attr("href");
+        log.info("Schedule uri is " + uri);
+        return uri;
     }
 
-    private Element getScheduleElementByGroup() {
-        log.info("Getting schedule row element");
+    private Element getScheduleRowByGroup(String groupNum) {
+        log.debug("Getting schedule row element by group " + groupNum);
         Elements elements = document.getElementsByClass("no-print");
         Elements rows = elements.get(0).getElementsByTag("table").get(0).child(0).children();
         for (Element row : rows) {
-            if (row.child(0).text().contains("70325")) {
+            if (row.child(0).text().contains(groupNum)) {
                 return row;
             }
         }
