@@ -6,13 +6,13 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="ERROR">
+        <Root level="ERROR" additivity="false">
             <AppenderRef ref="Console"/>
         </Root>
-        <logger name="mrmango.bsuir.schedule" level="DEBUG">
+        <logger name="mrmango.bsuir.schedule" level="DEBUG" additivity="false">
             <AppenderRef ref="Console"/>
         </logger>
-        <logger name="org.springframework" level="INFO">
+        <logger name="org.springframework" level="INFO" additivity="false">
             <AppenderRef ref="Console"/>
         </logger>
     </Loggers>
