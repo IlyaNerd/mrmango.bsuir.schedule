@@ -18,9 +18,7 @@ public class Unarchiver {
     @SneakyThrows
     public void unrar(File file) {
         File archiveDir = new File(file.getParent() + "/" + file.getName().replace(".rar", ""));
-        if (!archiveDir.mkdir()) {
-            throw new RuntimeException("Unable to create dir " + archiveDir);
-        }
+        archiveDir.mkdir();
         try (Archive archive = new Archive(file)) {
             for (FileHeader fileHeader : archive.getFileHeaders()) {
                 try (FileOutputStream os = new FileOutputStream(new File(archiveDir, fileHeader.getFileNameString()))) {
