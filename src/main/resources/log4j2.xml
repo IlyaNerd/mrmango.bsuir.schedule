@@ -12,5 +12,8 @@
         <logger name="mrmango.bsuir.schedule" level="DEBUG">
             <AppenderRef ref="Console"/>
         </logger>
+        <logger name="org.springframework" level="INFO">
+            <AppenderRef ref="Console"/>
+        </logger>
     </Loggers>
 </Configuration>
