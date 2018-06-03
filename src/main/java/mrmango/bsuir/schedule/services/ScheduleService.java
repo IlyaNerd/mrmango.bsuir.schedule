@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -41,6 +42,7 @@ public class ScheduleService {
         this.emailsTo = emailsTo;
     }
 
+    @Scheduled(cron = "0 0 10,17 ? * MON-FRI *")
     public void checkSchedule() {
         log.debug("Checking schedule");
         if (htmlParser.checkSchedule(lastDate)) {

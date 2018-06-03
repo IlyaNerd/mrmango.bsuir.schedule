@@ -1,6 +1,8 @@
 package mrmango.bsuir.schedule.config;
 
 import org.springframework.context.annotation.*;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * created by Ilya Aleksandrovich
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.*;
 @ComponentScan("mrmango.bsuir.schedule")
 @PropertySource("classpath:application.properties")
 @Import(EmailConfig.class)
+@EnableScheduling
 public class AppConfig {
 
 }
