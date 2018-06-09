@@ -1,6 +1,6 @@
 package mrmango.bsuir.schedule.config;
 
-import mrmango.bsuir.schedule.handlers.ExceptionHandler;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +17,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync
 @EnableScheduling
 @Configuration
+@Log4j2
 public class ScheduleConfig implements AsyncConfigurer {
 
     @Bean
@@ -30,6 +31,8 @@ public class ScheduleConfig implements AsyncConfigurer {
 
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return new ExceptionHandler();
+        return (ex, method, params) -> {
+            log.warn("Caught exception: " + ex.getMessage() + " from method [" + method.toGenericString() + "]");
+        };
     }
 }
