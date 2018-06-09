@@ -31,40 +31,44 @@ public class PdfParser {
 
     @SneakyThrows
     public List<Event> parsePdf(File file) {
-        PDDocument pddDocument = PDDocument.load(file);
-        PDPageTree pages = pddDocument.getPages();
-        List<Event> events = new ArrayList<>();
+        List<PDAnnotation> annotations = getAnnotationsFromPdf(file);
+        String date = annotations.get(0).getContents().trim();
+        String[] split = date.split(" по ");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.uuuu");
+        LocalDate date2 = LocalDate.parse(split[1], dateFormatter);
+        LocalDate date1 = LocalDate.parse(split[0] + date2.getYear(), dateFormatter);
+
+        return annotations.stream()
+                .skip(1)
+                .map(an -> {
+                    String text = an.getContents().replaceAll("[\r\n\t]", " ");
+                    int day = Integer.parseInt(text.substring(0, text.indexOf(" ")).trim());
+                    int month = getMonth(day, date1.getMonthValue(), date2.getMonthValue());
+                    int year = date2.getYear();
+
+                    LocalDate of = LocalDate.of(year, month, day);
+                    return parsePdfTextToEvent(text, of);
+                })
+                .collect(Collectors.toList());
+    }
+
+    public boolean pdfContainsAnnotations(File file) {
+        log.info("Checking if pdf contains annotations. file: " + file.getPath());
+        return !getAnnotationsFromPdf(file).isEmpty();
+    }
+
+    @SneakyThrows
+    private List<PDAnnotation> getAnnotationsFromPdf(File file) {
+        log.info("Parsing file: " + file.getPath());
+        PDPageTree pages = PDDocument.load(file).getPages();
+        List<PDAnnotation> annotations = new ArrayList<>();
         for (PDPage page : pages) {
-            List<PDAnnotation> annotations = page.getAnnotations()
+            annotations.addAll(page.getAnnotations()
                     .stream()
                     .filter(ann -> ann != null && ann.getContents() != null)
-                    .collect(Collectors.toList());
-            if (annotations.size() < 1) {
-                log.info("No annotations found");
-                continue;
-            }
-
-            String date = annotations.get(0).getContents().trim();
-            String[] split = date.split(" по ");
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.uuuu");
-            LocalDate date2 = LocalDate.parse(split[1], dateFormatter);
-            LocalDate date1 = LocalDate.parse(split[0] + date2.getYear(), dateFormatter);
-
-            events.addAll(annotations.stream()
-                    .skip(1)
-                    .map(an -> {
-                        String text = an.getContents().replaceAll("[\r\n\t]", " ");
-                        int day = Integer.parseInt(text.substring(0, text.indexOf(" ")).trim());
-                        int month = getMonth(day, date1.getMonthValue(), date2.getMonthValue());
-                        int year = date2.getYear();
-
-                        LocalDate of = LocalDate.of(year, month, day);
-                        return parsePdfTextToEvent(text, of);
-                    })
                     .collect(Collectors.toList()));
         }
-        events.forEach(ev -> System.out.println(ev.toString()));
-        return events;
+        return annotations;
     }
 
     private Event parsePdfTextToEvent(String text, LocalDate eventDate) {
