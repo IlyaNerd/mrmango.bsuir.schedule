@@ -22,7 +22,7 @@ public class ScheduleConfig implements AsyncConfigurer {
     @Bean
     public TaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(3);
+        executor.setCorePoolSize(1);
         executor.setMaxPoolSize(3);
         executor.setQueueCapacity(10);
         return executor;
