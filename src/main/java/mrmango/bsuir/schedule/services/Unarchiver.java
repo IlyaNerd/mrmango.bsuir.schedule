@@ -21,9 +21,6 @@ public class Unarchiver {
     public void unrar(File archiveFile) {
         log.info("Unraring file [" + archiveFile.getPath() + "]");
         File archiveDir = new File(archiveFile.getParent() + "/");
-        if (!archiveDir.mkdirs()) {
-            log.warn("Unable to mkdirs: " + archiveDir.getPath());
-        }
         try (Archive archive = new Archive(archiveFile)) {
             for (FileHeader fileHeader : archive.getFileHeaders()) {
                 File unraredFile = new File(archiveDir, fileHeader.getFileNameString());

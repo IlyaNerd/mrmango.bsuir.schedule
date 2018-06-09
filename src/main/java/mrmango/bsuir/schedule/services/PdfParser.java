@@ -7,17 +7,17 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,19 +60,21 @@ public class PdfParser {
     @SneakyThrows
     private List<PDAnnotation> getAnnotationsFromPdf(File file) {
         log.info("Parsing file: " + file.getPath());
-        PDPageTree pages = PDDocument.load(file).getPages();
         List<PDAnnotation> annotations = new ArrayList<>();
-        for (PDPage page : pages) {
-            annotations.addAll(page.getAnnotations()
-                    .stream()
-                    .filter(ann -> ann != null && ann.getContents() != null)
-                    .collect(Collectors.toList()));
+        try (PDDocument document = PDDocument.load(file)) {
+            for (PDPage page : document.getPages()) {
+                annotations.addAll(page.getAnnotations()
+                        .stream()
+                        .filter(ann -> ann != null && ann.getContents() != null)
+                        .collect(Collectors.toList()));
+            }
         }
         return annotations;
     }
 
+    @SneakyThrows
     private Event parsePdfTextToEvent(String text, LocalDate eventDate) {
-        log.debug("Parsing text to json [" + text + "]");
+        log.debug("Parsing text to event [" + text + "]");
         Event event = new Event();
 
         String[] split = text.split(" ");
@@ -85,26 +87,21 @@ public class PdfParser {
         String[] timeSpl = values.get(0).split(":");
         LocalTime startTime = LocalTime.of(Integer.parseInt(timeSpl[0]), Integer.parseInt(timeSpl[1]));
         EventDateTime eventDateTime = new EventDateTime();
-        eventDateTime.setDateTime(new DateTime(new Date(
-                eventDate.getYear(),
-                eventDate.getMonthValue(),
-                eventDate.getDayOfMonth(),
-                startTime.getHour(),
-                startTime.getMinute())));
+        eventDateTime.setDateTime(new DateTime(LocalDateTime.of(eventDate, startTime)
+                .atOffset(ZoneOffset.of("+03:00"))
+                .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
         event.setStart(eventDateTime);
 
         LocalTime endTime = startTime.plusHours(3).plusMinutes(5);
         EventDateTime end = new EventDateTime()
-                .setDateTime(new DateTime(new Date(
-                        eventDate.getYear(),
-                        eventDate.getMonthValue(),
-                        eventDate.getDayOfMonth(),
-                        endTime.getHour(),
-                        endTime.getMinute())));
+                .setDateTime(new DateTime(LocalDateTime.of(eventDate, endTime)
+                        .atOffset(ZoneOffset.of("+03:00"))
+                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
         event.setEnd(end);
 
         event.setSummary(values.get(2) + " " + values.get(3));
         event.setLocation(values.get(4));
+        log.debug("Parsed text to event: " + event.toPrettyString());
 
         return event;
     }
