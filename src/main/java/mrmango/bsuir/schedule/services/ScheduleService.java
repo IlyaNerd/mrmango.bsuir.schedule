@@ -57,7 +57,7 @@ public class ScheduleService {
     }
 
     @Async
-    @Scheduled(fixedDelay = 5 * 60 * 1000/*cron = "0 0 10,17 ? * MON-FRI"*/)
+    @Scheduled(cron = "0 0 10,17 ? * MON-FRI")
     public void checkSiteSchedule() {
         log.debug("Checking schedule on site for changes");
         if (htmlParser.checkSchedule(lastDate)) {
