@@ -80,7 +80,7 @@ public class PdfParser {
         String[] split = text.split(" ");
         List<String> values = Arrays.stream(split)
                 .filter(item -> !item.isEmpty())
-                .skip(2)
+                .skip(1)
                 .map(String::trim)
                 .collect(Collectors.toList());
 
