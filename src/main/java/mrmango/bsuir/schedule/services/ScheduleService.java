@@ -32,7 +32,7 @@ public class ScheduleService {
     private final Calendar googleCalendarService;
     private final EventService eventService;
 
-    private LocalDate lastDate = LocalDate.MIN;
+    private final LastDateService lastDateService;
 
     private final List<String> emailsTo;
 
@@ -44,7 +44,9 @@ public class ScheduleService {
                            @Value("#{'${emails}'.split(',')}") List<String> emailsTo,
                            PdfParser pdfParser,
                            MarkedFileService markedFileService,
-                           Calendar googleCalendarService, EventService eventService) {
+                           Calendar googleCalendarService,
+                           EventService eventService,
+                           LastDateService lastDateService) {
         this.htmlParser = htmlParser;
         this.downloader = downloader;
         this.unarchiver = unarchiver;
@@ -54,20 +56,22 @@ public class ScheduleService {
         this.markedFileService = markedFileService;
         this.googleCalendarService = googleCalendarService;
         this.eventService = eventService;
+        this.lastDateService = lastDateService;
     }
 
     @Async
     @Scheduled(cron = "0 0 10,17 ? * MON-FRI")
     public void checkSiteSchedule() {
         log.debug("Checking schedule on site for changes");
-        if (htmlParser.checkSchedule(lastDate)) {
+        if (htmlParser.checkSchedule(lastDateService.getLastDate())) {
             log.debug("New schedule was found");
-            lastDate = LocalDate.now();
+            LocalDate date = LocalDate.now();
+            lastDateService.updateLastDate(date);
             String uri = htmlParser.getScheduleUri();
             File file = downloader.download("https://iti.bsuir.by" + uri);
             unarchiver.unrar(file);
             emailService.sendEmail(emailsTo,
-                    "Found new schedule from date: " + lastDate.format(DateTimeFormatter.ofPattern("dd.MM.uuuu")),
+                    "Found new schedule from date: " + date.format(DateTimeFormatter.ofPattern("dd.MM.uuuu")),
                     "");
         }
     }
