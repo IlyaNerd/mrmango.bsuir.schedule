@@ -33,7 +33,10 @@ public class PdfParser {
     public List<Event> parsePdf(File file) {
         List<PDAnnotation> annotations = getAnnotationsFromPdf(file);
         String date = annotations.get(0).getContents().trim();
-        String[] split = date.split(" по ");
+        if(date.startsWith("c")) {
+            date = date.substring(2, date.length() - 1);
+        }
+        String[] split = date.trim().split(" по ");
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.uuuu");
         LocalDate date2 = LocalDate.parse(split[1], dateFormatter);
         LocalDate date1 = LocalDate.parse(split[0] + date2.getYear(), dateFormatter);
