@@ -16,6 +16,19 @@ task fatJar(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
+//
+//sourceSets {
+//    main {
+//        java {
+//
+//        }
+//        resources = 'src/main/resources'
+//    }
+//    test {
+//        groovy = 'src/test/groovy'
+//        resources = 'src/test/resources'
+//    }
+//}
 
 repositories {
     mavenCentral()
@@ -24,7 +37,10 @@ repositories {
 dependencies {
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.9'
 
-    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.15'
+    testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
+    testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.1-groovy-2.4'
+
     compile group: 'com.github.axet', name: 'java-unrar', version: '1.7.0-1'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
