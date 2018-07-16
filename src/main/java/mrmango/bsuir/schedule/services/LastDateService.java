@@ -2,6 +2,8 @@ package mrmango.bsuir.schedule.services;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -16,11 +18,13 @@ import java.time.LocalDate;
 @Service
 @Log4j2
 public class LastDateService {
-    private final Path lastDateFile = Paths.get("./last_date");
+    private final Path lastDateFile;
     private LocalDate lastDate;
 
+    @Autowired
     @SneakyThrows
-    public LastDateService() {
+    public LastDateService(@Value("${last.date.file}") String lastDateFilePath) {
+        lastDateFile = Paths.get(lastDateFilePath);
         if (!Files.exists(lastDateFile)) {
             Files.createFile(lastDateFile);
             updateLastDate(LocalDate.MIN);
