@@ -48,4 +48,13 @@ class LastDateServiceSpec extends Specification {
         service.getLastDate() == LocalDate.now()
         lastDateFile.getText() == LocalDate.now().toString()
     }
+
+    def "does not read comments"() {
+        given:
+        lastDateFile = new File("test_last_date_comment")
+        lastDateFile << "#comment" << "#2016-06-16"
+
+        expect:
+        new LastDateService(lastDateFile.getPath()).getLastDate() == LocalDate.MIN
+    }
 }
