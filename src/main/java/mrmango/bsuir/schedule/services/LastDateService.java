@@ -26,7 +26,7 @@ public class LastDateService {
             updateLastDate(LocalDate.MIN);
         } else {
             lastDate = Files.lines(lastDateFile)
-                    .filter(line -> line.startsWith("#"))
+                    .filter(line -> !line.startsWith("#"))
                     .map(LocalDate::parse)
                     .findFirst()
                     .orElse(LocalDate.MIN);
