@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,17 +28,11 @@ public class PdfParser {
         this.pdfTextToEventService = pdfTextToEventService;
     }
 
-    @SneakyThrows
     public List<Event> parsePdf(File file) {
-        List<PDAnnotation> annotations = getAnnotationsFromPdf(file);
-        LocalDate[] dates = pdfTextToEventService.parseDatesFromTo(annotations.get(0).getContents().trim());
-        LocalDate from = dates[0];
-        LocalDate to = dates[1];
-
-        return annotations.stream()
-                .skip(1) //date from to
-                .map(an -> pdfTextToEventService.parsePdfTextToEvent(an.getContents(), from, to))
-                .collect(Collectors.toList());
+        return pdfTextToEventService.parseTextToEvents(
+                getAnnotationsFromPdf(file).stream()
+                        .map(PDAnnotation::getContents)
+                        .collect(Collectors.toList()));
     }
 
     public boolean pdfContainsAnnotations(File file) {

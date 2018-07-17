@@ -16,19 +16,6 @@ task fatJar(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
-//
-//sourceSets {
-//    main {
-//        java {
-//
-//        }
-//        resources = 'src/main/resources'
-//    }
-//    test {
-//        groovy = 'src/test/groovy'
-//        resources = 'src/test/resources'
-//    }
-//}
 
 repositories {
     mavenCentral()
@@ -49,6 +36,8 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-context', version: '5.0.0.RELEASE'
     compile group: 'org.springframework', name: 'spring-test', version: '5.0.0.RELEASE'
     compile group: 'org.springframework', name: 'spring-context-support', version: '5.0.0.RELEASE'
+
+    compile group: 'cglib', name: 'cglib-nodep', version: '3.2.7'
 
     compile 'javax:javaee-api:7.0'
 

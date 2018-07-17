@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,6 +24,21 @@ import java.util.stream.Collectors;
 @Service
 @Log4j2
 public class TextToEventParser {
+
+    public List<Event> parseTextToEvents(List<String> text) {
+        if(text.isEmpty()) {
+            throw new IllegalArgumentException("Text to parse is empty");
+        }
+
+        LocalDate[] dates = parseDatesFromTo(text.get(0).trim());
+        LocalDate from = dates[0];
+        LocalDate to = dates[1];
+
+        return text.stream()
+                .skip(1) //date from to
+                .map(txt -> parseTextToEvent(txt, from, to))
+                .collect(Collectors.toList());
+    }
 
     /**
      * parses event date from and event date to from str like: "с 11.06. по 23.06.2018"
@@ -72,7 +88,7 @@ public class TextToEventParser {
      * @param to event date to
      * @return event with start, end dates, location and summary
      */
-    public Event parsePdfTextToEvent(String pdfText, LocalDate from, LocalDate to) {
+    public Event parseTextToEvent(String pdfText, LocalDate from, LocalDate to) {
         log.debug("Parsing text to event [" + pdfText + "]");
         String text = pdfText.replaceAll("[\r\n\t]", " ");
         LocalDate eventDate = parseEventDate(text, from, to);
