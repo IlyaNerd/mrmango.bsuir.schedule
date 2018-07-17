@@ -31,8 +31,6 @@ public class ScheduleConfig implements AsyncConfigurer {
 
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return (ex, method, params) -> {
-            log.warn("Caught exception: " + ex.getMessage() + " from method [" + method.toGenericString() + "]");
-        };
+        return (ex, method, params) -> log.warn("Caught exception: " + ex.getMessage() + " from method [" + method.toGenericString() + "]");
     }
 }
