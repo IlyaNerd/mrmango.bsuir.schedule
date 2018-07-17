@@ -91,7 +91,7 @@ public class ScheduleService {
             for (Event event : events) {
                 googleCalendarService.events().insert("primary", event).execute();
             }
-            markedFileService.moveMarkedFiles(markedPdfFiles);
+            markedFileService.moveParsedFiles(markedPdfFiles);
         }
     }
 }
