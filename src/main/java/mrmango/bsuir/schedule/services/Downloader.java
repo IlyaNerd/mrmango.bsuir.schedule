@@ -26,7 +26,7 @@ public class Downloader {
     @SneakyThrows
     public File download(String from) {
         URL url = new URL(from);
-        File archive = new File(dir + "schedule.rar");
+        File archive = new File(dir, "schedule.rar");
         archive.getParentFile().mkdirs();
         try (ReadableByteChannel rbc = Channels.newChannel(url.openStream());
              FileOutputStream fos = new FileOutputStream(archive)) {

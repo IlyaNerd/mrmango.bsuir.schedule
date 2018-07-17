@@ -10,25 +10,20 @@ import spock.lang.Specification
  * */
 class DownloaderSpec extends Specification {
     @Shared
-    File dir = new File('tmp/')
+    File dir = new File('/test_downloader/')
 
     void setup() {
-        try {
-            dir.eachFileRecurse { it.delete() }
-            dir.delete()
-        } catch (Exception ignored) {
-        }
+        dir.deleteDir()
     }
 
     void cleanup() {
-        dir.eachFileRecurse { it.delete() }
-        dir.delete()
+        dir.deleteDir()
     }
 
     def "download file"() {
         when:
         dir.mkdirs()
-        def download = new Downloader('/tmp/').download(
+        def download = new Downloader(dir.getPath()).download(
                 "https://www.google.by/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
 
         then:
