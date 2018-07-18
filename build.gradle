@@ -9,8 +9,7 @@ compileJava.options.encoding = 'UTF-8'
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': 'Gradle Jar File Example',
-                'Implementation-Version': version,
+        attributes 'Implementation-Version': version,
                 'Main-Class': 'mrmango.bsuir.schedule.main.Application'
     }
     baseName = project.name
