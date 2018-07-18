@@ -1,14 +1,9 @@
 package mrmango.bsuir.schedule.services;
 
-import lombok.SneakyThrows;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,26 +14,16 @@ import java.time.format.DateTimeFormatter;
  * on 27-May-2018
  */
 @Service
+@Log4j2
 public class HtmlParser {
-    private static final Logger log = LogManager.getLogger(HtmlParser.class);
+    private final JsoupConnector jsoupConnector;
 
-    private final Connection connection;
-    private final String group;
-
-    public HtmlParser(@Value("${page.url}") String url,
-                      @Value("${student.group}") String group) {
-        log.info("Establishing connection to [" + url + "]");
-        connection = Jsoup.connect(url);
-        this.group = group;
+    @Autowired
+    public HtmlParser(JsoupConnector jsoupConnector) {
+        this.jsoupConnector = jsoupConnector;
     }
 
-    @SneakyThrows
-    public Document reloadDocument() {
-        log.info("Loading the document");
-        return connection.get();
-    }
-
-    public boolean checkSchedule(LocalDate prevDate) {
+    public boolean checkSchedule(String group, LocalDate prevDate) {
         log.info("Checking schedule for changes");
         Element row = getScheduleRowByGroup(group);
         String rawDate = row.child(1).text().replaceAll("[^\\d.]", "");
@@ -47,7 +32,7 @@ public class HtmlParser {
         return date.isAfter(prevDate);
     }
 
-    public String getScheduleUri() {
+    public String getScheduleUri(String group) {
         log.info("Getting schedule url");
         Element link = getScheduleRowByGroup(group).child(2).getElementsByTag("a").get(0);
         String uri = link.attr("href");
@@ -55,13 +40,15 @@ public class HtmlParser {
         return uri;
     }
 
-    private Element getScheduleRowByGroup(String groupNum) {
-        log.debug("Getting schedule row element by group [" + groupNum + "]");
-        Elements elements = reloadDocument().getElementsByClass("no-print");
-        Elements rows = elements.get(0).getElementsByTag("table").get(0).child(0).children();
-        for (Element row : rows) {
-            if (row.child(0).text().contains(groupNum)) {
-                return row;
+    private Element getScheduleRowByGroup(String group) {
+        log.debug("Getting schedule row element by group [" + group + "]");
+        Elements tables = jsoupConnector.loadDocument().getElementsByTag("table");
+        for(Element table : tables) {
+            Elements rows = table.getElementsByTag("tr");
+            for (Element row : rows) {
+                if (row.child(0).text().contains(group)) {
+                    return row;
+                }
             }
         }
         throw new RuntimeException("no group row was found");

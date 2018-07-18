@@ -35,9 +35,11 @@ public class ScheduleService {
     private final LastDateService lastDateService;
 
     private final List<String> emailsTo;
+    private final String group;
 
     @Autowired
     public ScheduleService(HtmlParser htmlParser,
+                           @Value("${student.group}") String group,
                            Downloader downloader,
                            Unarchiver unarchiver,
                            EmailService emailService,
@@ -48,6 +50,7 @@ public class ScheduleService {
                            EventService eventService,
                            LastDateService lastDateService) {
         this.htmlParser = htmlParser;
+        this.group = group;
         this.downloader = downloader;
         this.unarchiver = unarchiver;
         this.emailService = emailService;
@@ -63,11 +66,11 @@ public class ScheduleService {
     @Scheduled(cron = "0 0 10,17 ? * MON-FRI")
     public void checkSiteSchedule() {
         log.debug("Checking schedule on site for changes");
-        if (htmlParser.checkSchedule(lastDateService.getLastDate())) {
+        if (htmlParser.checkSchedule(group, lastDateService.getLastDate())) {
             log.debug("New schedule was found");
             LocalDate date = LocalDate.now();
             lastDateService.updateLastDate(date);
-            String uri = htmlParser.getScheduleUri();
+            String uri = htmlParser.getScheduleUri(group);
             File file = downloader.download("https://iti.bsuir.by" + uri);
             unarchiver.unrar(file);
             emailService.sendEmail(emailsTo,
