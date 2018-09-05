@@ -8,6 +8,7 @@ sourceCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
 task fatJar(type: Jar) {
+    dependsOn test
     manifest {
         attributes 'Implementation-Version': version,
                 'Main-Class': 'mrmango.bsuir.schedule.main.Application'

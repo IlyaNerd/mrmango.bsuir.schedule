@@ -11,7 +11,7 @@ import spock.lang.Specification
  * */
 class MarkedFileServiceSpec extends Specification {
     @Shared
-    File testDir = new File(System.getProperty("java.io.tmpdir") + "test_dir")
+    File testDir = new File(System.getProperty("java.io.tmpdir") + "/test_dir")
 
     void setup() {
         testDir.mkdir()

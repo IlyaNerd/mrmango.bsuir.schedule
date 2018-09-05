@@ -10,7 +10,7 @@ import spock.lang.Specification
  * */
 class DownloaderSpec extends Specification {
     @Shared
-    File dir = new File('/test_downloader/')
+    File dir = new File('test_downloader/')
 
     void setup() {
         dir.deleteDir()
