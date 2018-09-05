@@ -3,7 +3,7 @@ package mrmango.bsuir.schedule.services;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -21,7 +21,7 @@ import java.util.List;
  * on 03-Jun-2018
  */
 @Service
-@Log4j2
+@Slf4j
 public class ScheduleService {
     private final HtmlParser htmlParser;
     private final Downloader downloader;

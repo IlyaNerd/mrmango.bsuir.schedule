@@ -1,7 +1,7 @@
 package mrmango.bsuir.schedule.services;
 
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * on 09-Jun-2018
  */
 @Service
-@Log4j2
+@Slf4j
 public class MarkedFileService {
     private final PdfParser pdfParser;
     private final String dir;

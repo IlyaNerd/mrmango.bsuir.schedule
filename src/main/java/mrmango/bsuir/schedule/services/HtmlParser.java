@@ -1,6 +1,6 @@
 package mrmango.bsuir.schedule.services;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  * on 27-May-2018
  */
 @Service
-@Log4j2
+@Slf4j
 public class HtmlParser {
     private final JsoupConnector jsoupConnector;
 

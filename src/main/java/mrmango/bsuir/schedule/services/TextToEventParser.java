@@ -3,7 +3,7 @@ package mrmango.bsuir.schedule.services;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * created on 2018-07-16
  **/
 @Service
-@Log4j2
+@Slf4j
 public class TextToEventParser {
 
     public List<Event> parseTextToEvents(List<String> text) {

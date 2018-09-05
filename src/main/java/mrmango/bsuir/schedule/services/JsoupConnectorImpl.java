@@ -1,7 +1,7 @@
 package mrmango.bsuir.schedule.services;
 
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * created on 2018-07-18
  **/
 @Service
-@Log4j2
+@Slf4j
 public class JsoupConnectorImpl implements JsoupConnector {
 
     private final Connection connection;

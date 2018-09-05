@@ -1,6 +1,6 @@
 package mrmango.bsuir.schedule.config;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync
 @EnableScheduling
 @Configuration
-@Log4j2
+@Slf4j
 public class ScheduleConfig implements AsyncConfigurer {
 
     @Bean

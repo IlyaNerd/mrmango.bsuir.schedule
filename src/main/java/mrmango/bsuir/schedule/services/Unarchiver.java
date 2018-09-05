@@ -3,7 +3,7 @@ package mrmango.bsuir.schedule.services;
 import de.innosystec.unrar.Archive;
 import de.innosystec.unrar.rarfile.FileHeader;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
  * on 27-May-2018
  */
 @Service
-@Log4j2
+@Slf4j
 public class Unarchiver {
 
     @SneakyThrows

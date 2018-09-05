@@ -1,7 +1,6 @@
 package mrmango.bsuir.schedule.services;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,9 +13,8 @@ import java.util.List;
  * on 03-Jun-2018
  */
 @Service
+@Slf4j
 public class EmailService {
-    private static final Logger log = LogManager.getLogger(EmailService.class);
-
     private final JavaMailSender mailSender;
 
     @Autowired

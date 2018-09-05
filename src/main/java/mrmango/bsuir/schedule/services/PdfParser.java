@@ -2,7 +2,7 @@ package mrmango.bsuir.schedule.services;
 
 import com.google.api.services.calendar.model.Event;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * on 09-Jun-2018
  */
 @Service
-@Log4j2
+@Slf4j
 public class PdfParser {
     private final TextToEventParser pdfTextToEventService;
 
