@@ -7,11 +7,10 @@ appender("CONSOLE", ConsoleAppender) {
     }
 
     filter(ThresholdFilter) {
-        level = INFO
+        level = WARN
     }
 }
-appender("FILE", FileAppender) {
-    file = "app.log"
+appender("FILE", RollingFileAppender) {
     append = false
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
@@ -19,6 +18,11 @@ appender("FILE", FileAppender) {
 
     filter(ThresholdFilter) {
         level = DEBUG
+    }
+
+    rollingPolicy(TimeBasedRollingPolicy) {
+        fileNamePattern = "app.%d{yyyy-MM-dd}.log"
+        maxHistory = 7
     }
 }
 appender("ASYNC", AsyncAppender) {
