@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.FileAlreadyExistsException;
@@ -53,7 +54,7 @@ public class AppConfig {
                                  @Value("${credentials.client.key}") String clientKey,
                                  @Value("${credentials.folder}") String credentialsFolder) {
         // Load client secrets.
-        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(clientKey);
+        InputStream in = new FileInputStream(clientKey);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
