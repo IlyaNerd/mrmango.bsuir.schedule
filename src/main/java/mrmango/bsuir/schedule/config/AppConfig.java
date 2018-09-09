@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Configuration
 @ComponentScan("mrmango.bsuir.schedule")
-@PropertySource("classpath:application.properties")
+@PropertySource("file:application.properties")
 @Import({EmailConfig.class, ScheduleConfig.class})
 public class AppConfig {
 

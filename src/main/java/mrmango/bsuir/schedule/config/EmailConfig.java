@@ -14,7 +14,7 @@ import java.util.Properties;
  * on 03-Jun-2018
  */
 @Configuration
-@PropertySource("classpath:email.properties")
+@PropertySource("file:email.properties")
 public class EmailConfig {
 
     @Bean
